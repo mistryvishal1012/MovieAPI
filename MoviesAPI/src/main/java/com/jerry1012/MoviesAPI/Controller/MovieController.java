@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,31 +22,37 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/allmovies")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<Movie>> getAllMovies(){
         return new ResponseEntity<List<Movie>>(movieService.getAllMovies(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Movie> getMovieById(@PathVariable ObjectId id){
         return new ResponseEntity<Movie>(movieService.getMovieById(id),HttpStatus.OK);
     }
 
     @GetMapping("/countries")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<String>> getCountries(){
         return new ResponseEntity<List<String>>(movieService.getMoviesByCountry(),HttpStatus.OK);
     }
 
     @GetMapping("/director/{directorName}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<Movie>> getMovieByDirectory(@PathVariable String directorName){
         return new ResponseEntity<List<Movie>>(movieService.getMovieByDirector(directorName),HttpStatus.OK);
     }
 
     @GetMapping("/")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Map> home(){
         return new ResponseEntity<Map>(movieService.getMenu(),HttpStatus.OK);
     }
 
     @PostMapping("/addmovie")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Movie> addMovie(@Valid @RequestBody Movie movie){
         return new ResponseEntity<Movie>(movieService.addMovie(movie),HttpStatus.OK);
     }

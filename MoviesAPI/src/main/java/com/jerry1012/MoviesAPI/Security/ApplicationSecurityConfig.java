@@ -34,9 +34,12 @@ public class ApplicationSecurityConfig  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.authorizeHttpRequests()
+        httpSecurity.csrf().disable()
+                .authorizeHttpRequests()
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/movies/addmovie").hasRole("ADMIN")
+//                .requestMatchers("/movies/addmovie").hasRole(ADMIN.name())
+                .requestMatchers(HttpMethod.POST,"/movies").hasAuthority(ApplicationUserPermission.MOVIE_WRITE.name())
+                .requestMatchers(HttpMethod.GET,"/movies").hasRole(ADMIN.name())
                 .anyRequest().authenticated().and().httpBasic();
 
         return  httpSecurity.build();
@@ -47,13 +50,15 @@ public class ApplicationSecurityConfig  {
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("password"))
-                .roles(ADMIN.name()) // ROLE_STUDENT
+//                .roles(ADMIN.name()) // ROLE_STUDENT
+                .authorities(ADMIN.getGrantedAuthorities())
                 .build();
 
         UserDetails user = User.builder()
                 .username("user")
                 .password(passwordEncoder.encode("password"))
-                .roles(USER.name()) // ROLE_ADMIN
+//                .roles(USER.name()) // ROLE_ADMIN
+                .authorities(USER.getGrantedAuthorities())
                 .build();
 
 
